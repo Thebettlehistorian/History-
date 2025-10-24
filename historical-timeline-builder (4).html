@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChronoCraft - Professional Historical Timeline Builder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #161616;
+            --bg-secondary: #1e1e1e;
+            --bg-tertiary: #252525;
+            --accent: #acf92c;
+            --accent-hover: #9ee82b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --border-color: #333333;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --shadow-sm: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(22, 22, 22, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo svg {
+            width: 30px;
+            height: 30px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            color: var(--accent);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(172, 249, 44, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        /* Landing Page Sections */
+        .section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding-top: 80px;
+            background: radial-gradient(circle at 50% 50%, rgba(172, 249, 44, 0.1) 0%, transparent 50%);
+        }
+
+        .hero-content {
+            animation: fadeIn 1s ease-out;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Features Section */
+        .features {
+            background: var(--bg-secondary);
+            border-radius: 24px;
+            padding: 4rem;
+            margin: 2rem auto;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            font-weight: 700;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--bg-tertiary);
+            padding: 2rem;
+            border-radius: 16px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-icon svg {
+            width: 30px;
+            height: 30px;
+            fill: var(--bg-primary);
+        }
+
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            text-align: center;
+            padding: 5rem 2rem;
+        }
+
+        .pricing h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .pricing-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        .pricing-card {
+            background: var(--bg-secondary);
+            border-radius: 24px;
+            padding: 3rem;
+            max-width: 400px;
+            margin: 0 auto;
+            border: 2px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+        }
+
+        .price {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .price-period {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .pricing-features li:last-child {
+            border-bottom: none;
+        }
+
+        .check-icon {
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-secondary);
+            padding: 3rem 2rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .footer-link {
+            display: block;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.25rem 0;
+            transition: color 0.3s;
+        }
+
+        .footer-link:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            padding: 2.5rem;
+            border-radius: 24px;
+            max-width: 450px;
+            width: 90%;
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-header {
+            margin-bottom: 2rem;
+        }
+
+        .modal-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-subtitle {
+            color: var(--text-secondary);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: var(--text-primary);
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: 'Montserrat', sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+        }
+
+        .form-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .form-link:hover {
+            text-decoration: underline;
+        }
+
+        /* App Styles */
+        .app-container {
+            display: none;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        .app-container.active {
+            display: block;
+        }
+
+        .app-header {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .app-header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--bg-primary);
+        }
+
+        .app-main {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .timeline-controls {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+        }
+
+        .control-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-canvas {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2rem;
+            min-height: 500px;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .timeline-line {
+            position: absolute;
+            top: 50%;
+            left: 50px;
+            right: 50px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+            transform: translateY(-50%);
+        }
+
+        .timeline-events {
+            position: relative;
+            min-height: 400px;
+            padding: 50px 0;
+        }
+
+        .timeline-event {
+            position: absolute;
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 2px solid var(--accent);
+            min-width: 200px;
+            cursor: move;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .timeline-event:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .timeline-event.top {
+            top: 20%;
+        }
+
+        .timeline-event.bottom {
+            bottom: 20%;
+        }
+
+        .event-date {
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .event-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .event-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .event-delete {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.2rem;
+            opacity: 0;
+            transition: opacity 0.3s, color 0.3s;
+        }
+
+        .timeline-event:hover .event-delete {
+            opacity: 1;
+        }
+
+        .event-delete:hover {
+            color: #ff4444;
+        }
+
+        /* Tools Panel */
+        .tools-panel {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 16px;
+            margin-top: 2rem;
+        }
+
+        .tools-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .tools-tabs {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .tab-btn {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+        }
+
+        .tab-btn.active {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Export Options */
+        .export-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .export-btn {
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .export-btn:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-color: var(--accent);
+        }
+
+        .export-icon {
+            font-size: 2rem;
+        }
+
+        /* Themes */
+        .theme-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+
+        .theme-option {
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .theme-option.active {
+            border-color: var(--accent);
+        }
+
+        .theme-preview {
+            width: 100%;
+            height: 60px;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Loading State */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(22, 22, 22, 0.95);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Success Message */
+        .success-message {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: var(--accent);
+            color: var(--bg-primary);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transform: translateX(400px);
+            transition: transform 0.3s;
+            z-index: 2000;
+        }
+
+        .success-message.active {
+            transform: translateX(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .features {
+                padding: 2rem 1rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .app-header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .control-group {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline-event {
+                min-width: 150px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-hover);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M16.2,16.2L11,13V7H12.5V12.2L17,14.9L16.2,16.2Z"/>
+                </svg>
+                ChronoCraft
+            </div>
+            <div class="nav-links">
+                <a href="#pricing" class="nav-link" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="background: var(--accent); color: var(--bg-primary); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">$9/mo</span>
+                    Pricing
+                </a>
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#about" class="nav-link">About</a>
+                <button class="btn btn-secondary" onclick="openModal('login')">Login</button>
+                <button class="btn btn-primary" onclick="openModal('signup')">Start Free Trial</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Landing Page -->
+    <div id="landingPage">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Bring History to Life</h1>
+                <p class="hero-subtitle">Create stunning, interactive historical timelines in minutes. Perfect for educators, students, and history enthusiasts.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" onclick="openModal('signup')">
+                        Start Your Free Trial
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"/>
+                        </svg>
+                    </button>
+                    <button class="btn btn-secondary" onclick="scrollToSection('pricing')">
+                        View Pricing
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section (Moved Up) -->
+        <section id="pricing" class="section pricing">
+            <h2>Simple, Transparent Pricing</h2>
+            <p class="pricing-subtitle">Start with a 7-day free trial. No credit card required.</p>
+            <div class="pricing-card" style="position: relative;">
+                <div class="price">$9</div>
+                <div class="price-period">per month</div>
+                <div style="background: rgba(172, 249, 44, 0.1); padding: 1rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                    <strong style="color: var(--accent);">Limited Time: 50% OFF</strong><br>
+                    <span style="text-decoration: line-through; color: var(--text-secondary);">$18/month</span> → Now only $9/month
+                </div>
+                <ul class="pricing-features">
+                    <li>
+                        <span class="check-icon">✓</span>
+                        Unlimited timeline creation
+                    </li>
+                    <li>
+                        <span class="check-icon">✓</span>
+                        Access to historical database
+                    </li>
+                    <li>
+                        <span class="check-icon">✓</span>
+                        All export formats
+                    </li>
+                    <li>
+                        <span class="check-icon">✓</span>
+                        Real-time collaboration
+                    </li>
+                    <li>
+                        <span class="check-icon">✓</span>
+                        Cloud storage & sync
+                    </li>
+                    <li>
+                        <span class="check-icon">✓</span>
+                        Priority support
+                    </li>
+                </ul>
+                <button class="btn btn-primary" style="width: 100%; font-size: 1.1rem; padding: 1rem;" onclick="openModal('signup')">
+                    Start Free Trial → Get Instant Access
+                </button>
+                <p style="text-align: center; margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
+                    ✅ Cancel anytime • ✅ No hidden fees • ✅ Instant access
+                </p>
+                <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCA0MCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjI0IiByeD0iNCIgZmlsbD0iIzAwNTc5RiIvPgo8cGF0aCBkPSJNMTYuNSA5TDE0LjUgMTVIMTEuNUw5LjUgOUgxMS41TDEzIDEzTDE0LjUgOUgxNi41WiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTE3IDEySDE5VjE1SDE3VjEyWiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTI0IDlIMjZWMTVIMjRWOVoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik0yOC41IDlIMzAuNVYxNUgyOC41VjlaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4=" alt="Visa" style="height: 30px;">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCA0MCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjI0IiByeD0iNCIgZmlsbD0iIzAwMCIvPgo8Y2lyY2xlIGN4PSIxNiIgY3k9IjEyIiByPSI3IiBmaWxsPSIjRUIwMDFCIi8+CjxjaXJjbGUgY3g9IjI0IiBjeT0iMTIiIHI9IjciIGZpbGw9IiNGRjVGMDAiLz4KPC9zdmc+" alt="Mastercard" style="height: 30px;">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCA0MCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjI0IiByeD0iNCIgZmlsbD0iIzAwNkZDRiIvPgo8cGF0aCBkPSJNMTMgOEgxOFYxNkgxM1Y4WiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTIwIDhIMjJWMTZIMjBWOFoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik0yNCA4SDI3VjE2SDI0VjhaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4=" alt="Amex" style="height: 30px;">
+                    <span style="color: var(--text-secondary); font-size: 0.85rem;">Secure Payment</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="section features">
+            <h2>Everything You Need to Tell History's Story</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Intuitive Timeline Creation</h3>
+                    <p class="feature-description">Drag and drop events, auto-arrange by date, and customize every detail with our powerful yet simple editor.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Rich Media Support</h3>
+                    <p class="feature-description">Add images, videos, audio narrations, and detailed descriptions to make your timelines engaging and informative.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12,6V9L16,5L12,1V4A8,8 0 0,0 4,12C4,13.57 4.46,15.03 5.24,16.26L6.7,14.8C6.25,13.97 6,13 6,12A6,6 0 0,1 12,6M18.76,7.74L17.3,9.2C17.74,10.04 18,11 18,12A6,6 0 0,1 12,18V15L8,19L12,23V20A8,8 0 0,0 20,12C20,10.43 19.54,8.97 18.76,7.74Z"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Auto-Synchronization</h3>
+                    <p class="feature-description">Your work saves automatically and syncs across all devices. Never lose your progress again.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M14,17H18V14L23,18.5L18,23V20H14V17M13,9H18V11H13V9M13,13H16.75L15.75,14H13V13M13,5H18V7H13V5M19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H12.19C12.07,20.69 12,20.36 12,20C12,16.69 14.69,14 18,14C18.34,14 18.67,14.04 19,14.1V5C19,3.89 18.1,3 17,3Z"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Multiple Export Formats</h3>
+                    <p class="feature-description">Export your timelines as images, PDFs, interactive web pages, or PowerPoint presentations.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M17,8L12,13L7,8L8.41,6.59L11,9.17V2H13V9.17L15.59,6.58L17,8M17,13L12,18L7,13L8.41,11.59L11,14.17V11H13V14.17L15.59,11.58L17,13M12,22A2,2 0 0,1 10,20A2,2 0 0,1 12,18A2,2 0 0,1 14,20A2,2 0 0,1 12,22Z"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Historical Database</h3>
+                    <p class="feature-description">Access our curated database of over 10,000 historical events with verified dates and descriptions.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12,5A3.5,3.5 0 0,0 8.5,8.5A3.5,3.5 0 0,0 12,12A3.5,3.5 0 0,0 15.5,8.5A3.5,3.5 0 0,0 12,5M12,7A1.5,1.5 0 0,1 13.5,8.5A1.5,1.5 0 0,1 12,10A1.5,1.5 0 0,1 10.5,8.5A1.5,1.5 0 0,1 12,7M5.5,8A2.5,2.5 0 0,0 3,10.5C3,11.44 3.53,12.25 4.29,12.68C4.65,12.88 5.06,13 5.5,13C5.94,13 6.35,12.88 6.71,12.68C7.08,12.47 7.39,12.17 7.62,11.81C6.89,10.86 6.5,9.7 6.5,8.5C6.5,8.41 6.5,8.31 6.5,8.22C6.2,8.08 5.86,8 5.5,8M18.5,8C18.14,8 17.8,8.08 17.5,8.22C17.5,8.31 17.5,8.41 17.5,8.5C17.5,9.7 17.11,10.86 16.38,11.81C16.5,12 16.63,12.15 16.78,12.3C16.94,12.45 17.1,12.58 17.29,12.68C17.65,12.88 18.06,13 18.5,13C18.94,13 19.35,12.88 19.71,12.68C20.47,12.25 21,11.44 21,10.5A2.5,2.5 0 0,0 18.5,8M12,14C9.66,14 5,15.17 5,17.5V19H19V17.5C19,15.17 14.34,14 12,14M4.71,14.55C2.78,14.78 0,15.76 0,17.5V19H3V17.07C3,16.06 3.69,15.22 4.71,14.55M19.29,14.55C20.31,15.22 21,16.06 21,17.07V19H24V17.5C24,15.76 21.22,14.78 19.29,14.55M12,16C13.53,16 15.24,16.5 16.23,17H7.77C8.76,16.5 10.47,16 12,16Z"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Collaboration Tools</h3>
+                    <p class="feature-description">Share timelines with students or colleagues, allow comments, and work together in real-time.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Audible Recommendations Section -->
+        <section class="section" style="background: linear-gradient(135deg, rgba(172, 249, 44, 0.05), transparent); border-radius: 24px; margin: 2rem auto;">
+            <h2 style="text-align: center; margin-bottom: 1rem;">📚 Enhance Your Historical Knowledge</h2>
+            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 3rem;">
+                Listen to these bestselling history audiobooks while creating your timelines
+            </p>
+            <div class="features-grid">
+                <div class="feature-card" style="cursor: pointer;" onclick="trackAudibleClick('sapiens')">
+                    <div style="background: linear-gradient(135deg, #FF6B00, #FFA500); padding: 1rem; border-radius: 12px; margin-bottom: 1rem;">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjMwIiB2aWV3Qm94PSIwIDAgMTAwIDMwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjx0ZXh0IHg9IjUwIiB5PSIyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZm9udC13ZWlnaHQ9ImJvbGQiPkF1ZGlibGU8L3RleHQ+PC9zdmc+" alt="Audible" style="width: 100%; filter: brightness(0) invert(1);">
+                    </div>
+                    <h3 class="feature-title">Sapiens: A Brief History</h3>
+                    <p class="feature-description">by Yuval Noah Harari</p>
+                    <p style="color: var(--accent); font-weight: 600; margin-top: 1rem;">Try FREE with Audible Plus</p>
+                    <a href="https://www.audible.com/pd/Sapiens-Audiobook/B00SXJF7J4?ref=REPLACE_WITH_YOUR_AFFILIATE_ID" 
+                       target="_blank" 
+                       class="btn btn-secondary" 
+                       style="margin-top: 1rem; width: 100%; text-decoration: none; text-align: center;"
+                       onclick="event.stopPropagation();">
+                        Listen Now →
+                    </a>
+                </div>
+                
+                <div class="feature-card" style="cursor: pointer;" onclick="trackAudibleClick('rome')">
+                    <div style="background: linear-gradient(135deg, #FF6B00, #FFA500); padding: 1rem; border-radius: 12px; margin-bottom: 1rem;">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjMwIiB2aWV3Qm94PSIwIDAgMTAwIDMwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjx0ZXh0IHg9IjUwIiB5PSIyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZm9udC13ZWlnaHQ9ImJvbGQiPkF1ZGlibGU8L3RleHQ+PC9zdmc+" alt="Audible" style="width: 100%; filter: brightness(0) invert(1);">
+                    </div>
+                    <h3 class="feature-title">SPQR: A History of Rome</h3>
+                    <p class="feature-description">by Mary Beard</p>
+                    <p style="color: var(--accent); font-weight: 600; margin-top: 1rem;">30-Day Free Trial</p>
+                    <a href="https://www.audible.com/pd/SPQR-Audiobook/B0166JFGMM?ref=REPLACE_WITH_YOUR_AFFILIATE_ID" 
+                       target="_blank" 
+                       class="btn btn-secondary" 
+                       style="margin-top: 1rem; width: 100%; text-decoration: none; text-align: center;"
+                       onclick="event.stopPropagation();">
+                        Get Free Audiobook →
+                    </a>
+                </div>
+                
+                <div class="feature-card" style="cursor: pointer;" onclick="trackAudibleClick('guns')">
+                    <div style="background: linear-gradient(135deg, #FF6B00, #FFA500); padding: 1rem; border-radius: 12px; margin-bottom: 1rem;">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjMwIiB2aWV3Qm94PSIwIDAgMTAwIDMwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjx0ZXh0IHg9IjUwIiB5PSIyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC13ZWlnaHQ9ImJvbGQiPkF1ZGlibGU8L3RleHQ+PC9zdmc+" alt="Audible" style="width: 100%; filter: brightness(0) invert(1);">
+                    </div>
+                    <h3 class="feature-title">Guns, Germs, and Steel</h3>
+                    <p class="feature-description">by Jared Diamond</p>
+                    <p style="color: var(--accent); font-weight: 600; margin-top: 1rem;">Start Your Trial</p>
+                    <a href="https://www.audible.com/pd/Guns-Germs-and-Steel-Audiobook/B004JLTM6E?ref=REPLACE_WITH_YOUR_AFFILIATE_ID" 
+                       target="_blank" 
+                       class="btn btn-secondary" 
+                       style="margin-top: 1rem; width: 100%; text-decoration: none; text-align: center;"
+                       onclick="event.stopPropagation();">
+                        Try Audible Free →
+                    </a>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 3rem; padding: 2rem; background: var(--bg-secondary); border-radius: 16px;">
+                <h3 style="margin-bottom: 1rem; color: var(--accent);">🎧 Special Offer for ChronoCraft Users</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                    Get your first audiobook FREE plus 2 Audible Originals with a 30-day trial
+                </p>
+                <a href="https://www.audible.com/ep/freetrial?ref=REPLACE_WITH_YOUR_AFFILIATE_ID" 
+                   target="_blank" 
+                   class="btn btn-primary" 
+                   style="text-decoration: none;">
+                    Start Your Free Audible Trial
+                </a>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 1rem;">
+                    <em>As an Amazon Associate, we earn from qualifying purchases</em>
+                </p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <a href="#features" class="footer-link">Features</a>
+                    <a href="#pricing" class="footer-link">Pricing</a>
+                    <a href="#" class="footer-link">Examples</a>
+                    <a href="#" class="footer-link">Updates</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <a href="#" class="footer-link">Documentation</a>
+                    <a href="#" class="footer-link">Tutorials</a>
+                    <a href="#" class="footer-link">Blog</a>
+                    <a href="#" class="footer-link">Historical Database</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <a href="#" class="footer-link">About</a>
+                    <a href="#" class="footer-link">Contact</a>
+                    <a href="#" class="footer-link">Privacy Policy</a>
+                    <a href="#" class="footer-link">Terms of Service</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <a href="#" class="footer-link">Twitter</a>
+                    <a href="#" class="footer-link">LinkedIn</a>
+                    <a href="#" class="footer-link">YouTube</a>
+                    <a href="#" class="footer-link">support@chronocraft.app</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 ChronoCraft. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Application (Hidden Initially) -->
+    <div id="appContainer" class="app-container">
+        <div class="app-header">
+            <div class="app-header-content">
+                <h1 class="app-title">My Timeline Project</h1>
+                <div class="user-info">
+                    <span id="userEmail"></span>
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <button class="btn btn-secondary" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="app-main">
+            <!-- Timeline Controls -->
+            <div class="timeline-controls">
+                <h2>Add New Event</h2>
+                <div class="control-group">
+                    <div class="form-group">
+                        <label class="form-label">Date</label>
+                        <input type="text" class="form-input" id="eventDate" placeholder="e.g., 1492, July 4 1776, 2001">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Event Title</label>
+                        <input type="text" class="form-input" id="eventTitle" placeholder="e.g., Columbus Discovers America">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <input type="text" class="form-input" id="eventDescription" placeholder="Brief description...">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="addTimelineEvent()">Add Event</button>
+            </div>
+
+            <!-- Timeline Canvas -->
+            <div class="timeline-canvas">
+                <div class="timeline-line"></div>
+                <div class="timeline-events" id="timelineEvents">
+                    <!-- Sample events -->
+                    <div class="timeline-event top" style="left: 10%;">
+                        <button class="event-delete" onclick="deleteEvent(this)">×</button>
+                        <div class="event-date">1066</div>
+                        <div class="event-title">Battle of Hastings</div>
+                        <div class="event-description">Norman conquest of England begins</div>
+                    </div>
+                    <div class="timeline-event bottom" style="left: 30%;">
+                        <button class="event-delete" onclick="deleteEvent(this)">×</button>
+                        <div class="event-date">1492</div>
+                        <div class="event-title">Columbus Reaches Americas</div>
+                        <div class="event-description">European exploration of the New World</div>
+                    </div>
+                    <div class="timeline-event top" style="left: 50%;">
+                        <button class="event-delete" onclick="deleteEvent(this)">×</button>
+                        <div class="event-date">1776</div>
+                        <div class="event-title">American Independence</div>
+                        <div class="event-description">Declaration of Independence signed</div>
+                    </div>
+                    <div class="timeline-event bottom" style="left: 70%;">
+                        <button class="event-delete" onclick="deleteEvent(this)">×</button>
+                        <div class="event-date">1969</div>
+                        <div class="event-title">Moon Landing</div>
+                        <div class="event-description">First humans walk on the moon</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tools Panel -->
+            <div class="tools-panel">
+                <div class="tools-header">
+                    <h2>Timeline Tools</h2>
+                    <div class="tools-tabs">
+                        <button class="tab-btn active" onclick="switchTab('export')">Export</button>
+                        <button class="tab-btn" onclick="switchTab('themes')">Themes</button>
+                        <button class="tab-btn" onclick="switchTab('settings')">Settings</button>
+                    </div>
+                </div>
+
+                <!-- Export Tab -->
+                <div id="exportTab" class="tab-content active">
+                    <div class="export-options">
+                        <button class="export-btn" onclick="exportTimeline('pdf')">
+                            <span class="export-icon">📄</span>
+                            <span>Export as PDF</span>
+                        </button>
+                        <button class="export-btn" onclick="exportTimeline('image')">
+                            <span class="export-icon">🖼️</span>
+                            <span>Export as Image</span>
+                        </button>
+                        <button class="export-btn" onclick="exportTimeline('ppt')">
+                            <span class="export-icon">📊</span>
+                            <span>PowerPoint</span>
+                        </button>
+                        <button class="export-btn" onclick="exportTimeline('web')">
+                            <span class="export-icon">🌐</span>
+                            <span>Web Page</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Themes Tab -->
+                <div id="themesTab" class="tab-content">
+                    <div class="theme-options">
+                        <div class="theme-option active" onclick="changeTheme('dark')">
+                            <div class="theme-preview" style="background: linear-gradient(135deg, #161616, #acf92c);"></div>
+                            <span>Dark Mode</span>
+                        </div>
+                        <div class="theme-option" onclick="changeTheme('light')">
+                            <div class="theme-preview" style="background: linear-gradient(135deg, #ffffff, #4285f4);"></div>
+                            <span>Light Mode</span>
+                        </div>
+                        <div class="theme-option" onclick="changeTheme('vintage')">
+                            <div class="theme-preview" style="background: linear-gradient(135deg, #f4e4c1, #8b4513);"></div>
+                            <span>Vintage</span>
+                        </div>
+                        <div class="theme-option" onclick="changeTheme('ocean')">
+                            <div class="theme-preview" style="background: linear-gradient(135deg, #006994, #00d4aa);"></div>
+                            <span>Ocean</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div id="settingsTab" class="tab-content">
+                    <div class="form-group">
+                        <label class="form-label">Timeline Title</label>
+                        <input type="text" class="form-input" value="My Historical Timeline">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date Format</label>
+                        <select class="form-input">
+                            <option>Year Only (1492)</option>
+                            <option>Month Year (July 1776)</option>
+                            <option>Full Date (December 7, 1941)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" checked> Auto-save enabled
+                        </label>
+                    </div>
+                    <button class="btn btn-primary">Save Settings</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('login')">×</button>
+            <div class="modal-header">
+                <h2 class="modal-title">Welcome Back</h2>
+                <p class="modal-subtitle">Login to access your timelines</p>
+            </div>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+                <div class="form-footer">
+                    <a href="#" class="form-link">Forgot password?</a>
+                    <a href="#" class="form-link" onclick="switchModal('login', 'signup')">Create account</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('signup')">×</button>
+            <div class="modal-header">
+                <h2 class="modal-title">Start Your Free Trial</h2>
+                <p class="modal-subtitle">7 days free, then $9/month</p>
+            </div>
+            <form onsubmit="handleSignup(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-input" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" required id="signupEmail">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Start Free Trial</button>
+                <div class="form-footer">
+                    <span style="font-size: 0.9rem; color: var(--text-secondary);">Already have an account?</span>
+                    <a href="#" class="form-link" onclick="switchModal('signup', 'login')">Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('payment')">×</button>
+            <div class="modal-header">
+                <h2 class="modal-title">Complete Your Subscription</h2>
+                <p class="modal-subtitle">$9/month after 7-day free trial</p>
+            </div>
+            <form onsubmit="handlePayment(event)">
+                <div class="form-group">
+                    <label class="form-label">Card Number</label>
+                    <input type="text" class="form-input" placeholder="4242 4242 4242 4242" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Expiry Date</label>
+                        <input type="text" class="form-input" placeholder="MM/YY" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">CVC</label>
+                        <input type="text" class="form-input" placeholder="123" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Name on Card</label>
+                    <input type="text" class="form-input" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Start Subscription</button>
+                <p style="text-align: center; margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
+                    You won't be charged until your 7-day trial ends
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Success Message -->
+    <div id="successMessage" class="success-message">
+        Payment successful! Welcome to ChronoCraft Pro
+    </div>
+
+    <script>
+        // State Management
+        let currentUser = null;
+        let timelineData = [];
+        let eventCounter = 0;
+
+        // Audible Affiliate Tracking
+        function trackAudibleClick(book) {
+            // Track affiliate clicks for analytics
+            console.log('Audible click tracked:', book);
+            
+            // You can add Google Analytics or other tracking here
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'click', {
+                    'event_category': 'affiliate',
+                    'event_label': 'audible_' + book
+                });
+            }
+            
+            // Open the appropriate Audible link
+            const links = {
+                'sapiens': 'https://www.audible.com/pd/Sapiens-Audiobook/B00SXJF7J4?ref=REPLACE_WITH_YOUR_AFFILIATE_ID',
+                'rome': 'https://www.audible.com/pd/SPQR-Audiobook/B0166JFGMM?ref=REPLACE_WITH_YOUR_AFFILIATE_ID',
+                'guns': 'https://www.audible.com/pd/Guns-Germs-and-Steel-Audiobook/B004JLTM6E?ref=REPLACE_WITH_YOUR_AFFILIATE_ID'
+            };
+            
+            if (links[book]) {
+                window.open(links[book], '_blank');
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthStatus();
+            loadTimelineData();
+            initializeDragAndDrop();
+        });
+
+        // Authentication
+        function checkAuthStatus() {
+            const user = localStorage.getItem('chronocraft_user');
+            if (user) {
+                currentUser = JSON.parse(user);
+                showApp();
+            }
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId + 'Modal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId + 'Modal').classList.remove('active');
+        }
+
+        function switchModal(from, to) {
+            closeModal(from);
+            setTimeout(() => openModal(to), 300);
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            showLoading();
+            
+            setTimeout(() => {
+                currentUser = {
+                    email: event.target.querySelector('input[type="email"]').value,
+                    name: 'User',
+                    subscription: 'active'
+                };
+                localStorage.setItem('chronocraft_user', JSON.stringify(currentUser));
+                hideLoading();
+                closeModal('login');
+                showApp();
+            }, 1500);
+        }
+
+        function handleSignup(event) {
+            event.preventDefault();
+            const email = document.getElementById('signupEmail').value;
+            
+            // Store temporary user data
+            currentUser = {
+                email: email,
+                name: event.target.querySelector('input[type="text"]').value,
+                subscription: 'trial'
+            };
+            
+            closeModal('signup');
+            openModal('payment');
+        }
+
+        function handlePayment(event) {
+            event.preventDefault();
+            showLoading();
+            
+            setTimeout(() => {
+                currentUser.subscription = 'active';
+                localStorage.setItem('chronocraft_user', JSON.stringify(currentUser));
+                hideLoading();
+                closeModal('payment');
+                showSuccessMessage();
+                showApp();
+            }, 2000);
+        }
+
+        function showApp() {
+            document.getElementById('landingPage').style.display = 'none';
+            document.getElementById('appContainer').classList.add('active');
+            document.getElementById('userEmail').textContent = currentUser.email;
+            document.getElementById('userAvatar').textContent = currentUser.email[0].toUpperCase();
+        }
+
+        function logout() {
+            localStorage.removeItem('chronocraft_user');
+            currentUser = null;
+            document.getElementById('appContainer').classList.remove('active');
+            document.getElementById('landingPage').style.display = 'block';
+        }
+
+        // Timeline Functionality
+        function addTimelineEvent() {
+            const date = document.getElementById('eventDate').value;
+            const title = document.getElementById('eventTitle').value;
+            const description = document.getElementById('eventDescription').value;
+            
+            if (!date || !title) {
+                alert('Please enter at least a date and title');
+                return;
+            }
+            
+            const eventDiv = document.createElement('div');
+            eventDiv.className = `timeline-event ${eventCounter % 2 === 0 ? 'top' : 'bottom'}`;
+            eventDiv.style.left = `${10 + (eventCounter * 15)}%`;
+            eventDiv.innerHTML = `
+                <button class="event-delete" onclick="deleteEvent(this)">×</button>
+                <div class="event-date">${date}</div>
+                <div class="event-title">${title}</div>
+                <div class="event-description">${description}</div>
+            `;
+            
+            document.getElementById('timelineEvents').appendChild(eventDiv);
+            
+            // Save to localStorage
+            timelineData.push({ date, title, description });
+            saveTimelineData();
+            
+            // Clear form
+            document.getElementById('eventDate').value = '';
+            document.getElementById('eventTitle').value = '';
+            document.getElementById('eventDescription').value = '';
+            
+            eventCounter++;
+            
+            // Make draggable
+            makeDraggable(eventDiv);
+        }
+
+        function deleteEvent(button) {
+            button.parentElement.remove();
+            saveTimelineData();
+        }
+
+        function saveTimelineData() {
+            const events = [];
+            document.querySelectorAll('.timeline-event').forEach(event => {
+                events.push({
+                    date: event.querySelector('.event-date').textContent,
+                    title: event.querySelector('.event-title').textContent,
+                    description: event.querySelector('.event-description').textContent,
+                    position: event.style.left,
+                    vertical: event.classList.contains('top') ? 'top' : 'bottom'
+                });
+            });
+            localStorage.setItem('chronocraft_timeline', JSON.stringify(events));
+        }
+
+        function loadTimelineData() {
+            const saved = localStorage.getItem('chronocraft_timeline');
+            if (saved) {
+                // Load saved timeline if needed
+            }
+        }
+
+        // Drag and Drop
+        function initializeDragAndDrop() {
+            document.querySelectorAll('.timeline-event').forEach(makeDraggable);
+        }
+
+        function makeDraggable(element) {
+            let isDragging = false;
+            let startX, startY, initialLeft, initialTop;
+            
+            element.addEventListener('mousedown', function(e) {
+                if (e.target.classList.contains('event-delete')) return;
+                
+                isDragging = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                initialLeft = element.offsetLeft;
+                initialTop = element.offsetTop;
+                element.style.cursor = 'grabbing';
+                element.style.zIndex = '1000';
+            });
+            
+            document.addEventListener('mousemove', function(e) {
+                if (!isDragging) return;
+                
+                const deltaX = e.clientX - startX;
+                const deltaY = e.clientY - startY;
+                
+                element.style.left = `${initialLeft + deltaX}px`;
+                
+                // Toggle between top and bottom based on vertical position
+                const container = document.querySelector('.timeline-events');
+                const rect = container.getBoundingClientRect();
+                const relativeY = e.clientY - rect.top;
+                
+                if (relativeY < rect.height / 2) {
+                    element.classList.remove('bottom');
+                    element.classList.add('top');
+                } else {
+                    element.classList.remove('top');
+                    element.classList.add('bottom');
+                }
+            });
+            
+            document.addEventListener('mouseup', function() {
+                if (isDragging) {
+                    isDragging = false;
+                    element.style.cursor = 'move';
+                    element.style.zIndex = '';
+                    saveTimelineData();
+                }
+            });
+        }
+
+        // Tab Switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName + 'Tab').classList.add('active');
+        }
+
+        // Export Functions
+        function exportTimeline(format) {
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                alert(`Timeline exported as ${format.toUpperCase()}! (This is a demo - actual export would download a file)`);
+            }, 1500);
+        }
+
+        // Theme Switching
+        function changeTheme(theme) {
+            document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('active'));
+            event.target.closest('.theme-option').classList.add('active');
+            
+            // In a real app, this would change CSS variables
+            console.log(`Theme changed to: ${theme}`);
+        }
+
+        // Utility Functions
+        function showLoading() {
+            document.getElementById('loading').classList.add('active');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').classList.remove('active');
+        }
+
+        function showSuccessMessage() {
+            const msg = document.getElementById('successMessage');
+            msg.classList.add('active');
+            setTimeout(() => msg.classList.remove('active'), 3000);
+        }
+
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Add parallax effect to hero
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            if (hero) {
+                hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+        });
+    </script>
+</body>
+</html>
